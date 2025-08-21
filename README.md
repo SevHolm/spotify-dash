@@ -66,10 +66,10 @@ data/*.csv
 1. Open this repo in **Codespaces**.
 2. If prompted, **Rebuild Container** (runs the postCreate command to set up Python + venv).
 3. Run the app:
-   ```bash
+```bash
    python app.py 
 ```
-1. Click the forwarded port 8050 → app opens in your browser. 
+4. Click the forwarded port 8050 → app opens in your browser. 
 
 
 
@@ -95,7 +95,8 @@ python app.py
 - Expected columns (Kaggle schema):  
     `artist_name, track_name, year, popularity, danceability, energy, valence, tempo, (optional: acousticness, speechiness, instrumentalness, liveness, loudness, genre, …)`
 
-- CSV was found from Kaggle at this URL: https://www.kaggle.com/datasets/amitanshjoshi/spotify-1million-tracks?resource=download&select=spotify_data.csv
+- CSV was found from Kaggle at this URL:
+  `https://www.kaggle.com/datasets/amitanshjoshi/spotify-1million-tracks?resource=download&select=spotify_data.csv`
     
 - Put your CSV in `data/` (e.g., `data/spotify_data.csv`).
     
@@ -108,41 +109,38 @@ If your CSV is larger than 100 MB, **don’t commit it**. Either:
 
 - Add it to `.gitignore` and keep it local/only in Codespaces, **or**
     
-- Commit a compressed subset (recommended):
+- Commit a compressed subset (This is what I did):
 
-```python
-# Save as: scripts/make_subset.py   (or run inline in a Python cell)
-import pandas as pd
+```bash
+# in repo root
+gzip -k data/spotify_data.csv          # makes data/spotify_data.csv.gz (keeps original)
+# or with Python:
+# python - << 'PY'
+# import pandas as pd; pd.read_csv("data/spotify_data.csv", low_memory=False)\
+#   .to_csv("data/spotify_data.csv.gz", index=False, compression="gzip")
+# PY
 
-in_path  = "data/spotify_data.csv"          # adjust if needed
-out_path = "data/spotify_subset.csv.gz"
+# ignore the big uncompressed file so you don’t push it by accident
+echo "data/*.csv" >> .gitignore
 
-usecols = [
-    "artist_name","track_name","year","popularity",
-    "danceability","energy","valence","tempo","acousticness"
-]
-
-df = pd.read_csv(in_path, usecols=usecols, low_memory=False)
-df = df[df["year"].between(2000, 2025)]
-df = df[df["popularity"].fillna(0) >= 5]
-
-for c in ["year","popularity","danceability","energy","valence","tempo","acousticness"]:
-    df[c] = pd.to_numeric(df[c], errors="coerce")
-
-df = df.dropna(subset=["artist_name","track_name","year","danceability","energy","valence","tempo"])
-df.to_csv(out_path, index=False, compression="gzip")
-print("Wrote:", out_path, "rows:", len(df))
+git add data/spotify_data.csv.gz .gitignore
+git commit -m "data: add compressed spotify csv"
+git push
 ```
+
 
 Update your repo to include the smaller `data/spotify_subset.csv.gz`.
 
-
+The app already supports `.csv.gz` since it uses the loader with `compression="infer"`.
+```python
+pd.read_csv(path, low_memory=False, compression="infer")
+```
 
 ## Configuration
 
 - The app binds to `0.0.0.0` and respects `PORT` (good for Codespaces/Render/Heroku):
 
-	 ```python
+```python
 # app.py (at bottom)
 import os
 port = int(os.environ.get("PORT", 8050))
