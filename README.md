@@ -38,16 +38,25 @@ Source: COMP 4433 Project 2 brief
 
 ## Project structure
 .  
-├─ app.py  
-├─ requirements.txt  
-├─ README.md  
-├─ assets/  
-	└─ style.css  
-├─ data/  
-	└─ original_data.csv # original Kaggle CSV (large; see notes below) 
-    └─ spotify_data.csv.gz #compressed CSV
-├─  .devcontainer/  
-	└─ devcontainer.json
+.
+├── app.py
+├── requirements.txt
+├── README.md
+├── assets/
+│   └── style.css
+├── data/
+│   ├── original_data.csv        # original Kaggle CSV (ignored; too large)
+│   └── spotify_data.csv.gz      # compressed CSV (tracked)
+└── .devcontainer/
+    └── devcontainer.json
+
+.gitignore
+---------
+.venv/
+__pycache__/
+.DS_Store
+data/*.csv
+!data/*.csv.gz
 
 
 
