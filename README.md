@@ -37,7 +37,7 @@ Source: COMP 4433 Project 2 brief
 ---
 
 ## Project structure
-.  
+```text  
 .
 ├── app.py
 ├── requirements.txt
@@ -49,7 +49,8 @@ Source: COMP 4433 Project 2 brief
 │   └── spotify_data.csv.gz      # compressed CSV (tracked)
 └── .devcontainer/
     └── devcontainer.json
-
+```
+```text
 .gitignore
 ---------
 .venv/
@@ -57,7 +58,7 @@ __pycache__/
 .DS_Store
 data/*.csv
 !data/*.csv.gz
-
+```
 
 
 ## Quickstart (GitHub Codespaces)
